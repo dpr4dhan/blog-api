@@ -1,0 +1,1179 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Blog API",
+        "description": "Blog API",
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Demo API Server"
+        }
+    ],
+    "paths": {
+        "/api/v1/frontend/posts": {
+            "get": {
+                "tags": [
+                    "Frontend"
+                ],
+                "summary": "Get list of all posts",
+                "description": "Returns list of all posts",
+                "operationId": "getAllPostPaginationList",
+                "parameters": [
+                    {
+                        "name": "is_featured",
+                        "in": "query",
+                        "description": "Is Featured",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page (By default 1)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit (By default 10)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "Order By Column",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order (By default asc)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "resCod": {
+                                            "type": "string",
+                                            "example": "200"
+                                        },
+                                        "resDesc": {
+                                            "type": "string",
+                                            "example": "Post List"
+                                        },
+                                        "data": {
+                                            "$ref": "#components/schemas/PostPaginationResponseDto"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/v1/frontend/posts/like/{post_id}": {
+            "post": {
+                "tags": [
+                    "Frontend"
+                ],
+                "summary": "Like post",
+                "description": "Like post",
+                "operationId": "likePost",
+                "parameters": [
+                    {
+                        "name": "post_id",
+                        "in": "path",
+                        "description": "Post Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "resCod": {
+                                            "type": "string",
+                                            "example": "200"
+                                        },
+                                        "resDesc": {
+                                            "type": "string",
+                                            "example": "Post List"
+                                        },
+                                        "data": {
+                                            "$ref": "#components/schemas/PostResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/frontend/posts/comment/{post_id}": {
+            "post": {
+                "tags": [
+                    "Frontend"
+                ],
+                "summary": "Comment on post",
+                "description": "Comment on post",
+                "operationId": "commentPost",
+                "parameters": [
+                    {
+                        "name": "post_id",
+                        "in": "path",
+                        "description": "Post Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostCommentStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "resCod": {
+                                            "type": "string",
+                                            "example": "200"
+                                        },
+                                        "resDesc": {
+                                            "type": "string",
+                                            "example": "Post List"
+                                        },
+                                        "data": {
+                                            "$ref": "#components/schemas/PostResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/posts": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Get list of posts of logged user",
+                "description": "Returns list of posts of logged user",
+                "operationId": "getPostPaginationList",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page (By default 1)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit (By default 10)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "Order By Column",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order (By default asc)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#components/schemas/PostPaginationResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Create new Post",
+                "description": "Create new Post",
+                "operationId": "Create new Post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#components/schemas/PostResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error in input"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/posts/{id}": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Get Post information",
+                "description": "Get Post information",
+                "operationId": "getPostById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Post id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#components/schemas/PostResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Delete Post",
+                "description": "Delete Post",
+                "operationId": "deletePost",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Post id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Post deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Update Post information",
+                "description": "Update Post & return Post data",
+                "operationId": "updatePostById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Post id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#components/schemas/PostResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error in input"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get list of users",
+                "description": "Returns list of users",
+                "operationId": "getUserPaginationList",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page (By default 1)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit (By default 10)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "Order By Column",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order (By default asc)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#components/schemas/UserPaginationResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Register new User",
+                "description": "Register new User",
+                "operationId": "createNewUser",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error in input"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{id}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get User information",
+                "description": "Get User information",
+                "operationId": "getUserById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete User",
+                "description": "Delete User",
+                "operationId": "deleteUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update user information",
+                "description": "Update user & return user data",
+                "operationId": "updateUserById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error in input"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout User",
+                "description": "Logout User",
+                "operationId": "logoutUser",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#components/schemas/AuthLogoutResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login User",
+                "description": "Login User",
+                "operationId": "loginUser",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#components/schemas/AuthResource"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error in input"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PostCommentStoreRequest": {
+                "properties": {
+                    "comment": {
+                        "description": "Comment",
+                        "type": "string",
+                        "maxLength": 100,
+                        "example": "Comment"
+                    }
+                },
+                "type": "object"
+            },
+            "PostStoreRequest": {
+                "properties": {
+                    "title": {
+                        "description": "Title",
+                        "type": "string",
+                        "maxLength": 100,
+                        "example": "Title"
+                    },
+                    "body": {
+                        "description": "Content",
+                        "type": "string",
+                        "example": "Here goes the content",
+                        "nullable": true
+                    },
+                    "status": {
+                        "description": "Status",
+                        "type": "string",
+                        "example": "draft or published or archived",
+                        "nullable": true
+                    },
+                    "is_featured": {
+                        "description": "Is Featured",
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "publish_date": {
+                        "description": "Publish Date",
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "PostUpdateRequest": {
+                "properties": {
+                    "title": {
+                        "description": "Title",
+                        "type": "string",
+                        "maxLength": 100,
+                        "example": "Title"
+                    },
+                    "body": {
+                        "description": "Content",
+                        "type": "string",
+                        "example": "Here goes the content",
+                        "nullable": true
+                    },
+                    "status": {
+                        "description": "Status",
+                        "type": "string",
+                        "example": "draft or published or archived",
+                        "nullable": true
+                    },
+                    "is_featured": {
+                        "description": "Is Featured",
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "publish_date": {
+                        "description": "Publish Date",
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UserStoreRequest": {
+                "properties": {
+                    "name": {
+                        "description": "Name",
+                        "type": "string",
+                        "maxLength": 100,
+                        "example": "Name",
+                        "nullable": true
+                    },
+                    "email": {
+                        "description": "Email",
+                        "type": "string",
+                        "maxLength": 100,
+                        "example": "Email",
+                        "nullable": true
+                    },
+                    "password": {
+                        "description": "Password",
+                        "type": "string",
+                        "maxLength": 100,
+                        "example": "Password",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UserUpdateRequest": {
+                "properties": {
+                    "name": {
+                        "description": "Name",
+                        "type": "string",
+                        "maxLength": 100,
+                        "example": "Name",
+                        "nullable": true
+                    },
+                    "email": {
+                        "description": "Email",
+                        "type": "string",
+                        "maxLength": 100,
+                        "example": "Email",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AuthLogoutResource": {
+                "properties": {
+                    "message": {
+                        "description": "Message",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthResource": {
+                "properties": {
+                    "token": {
+                        "description": "Token",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CommentResource": {
+                "properties": {
+                    "uuid": {
+                        "description": "Uuid",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "comment": {
+                        "description": "Comment",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "commentator": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/UserResource"
+                            }
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ExceptionResource": {
+                "properties": {
+                    "code": {
+                        "description": "Code",
+                        "type": "string"
+                    },
+                    "message": {
+                        "description": "Message",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PostPaginationResource": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/PostResource"
+                    },
+                    "meta": {
+                        "description": "meta",
+                        "type": "object"
+                    },
+                    "links": {
+                        "description": "meta",
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "PostResource": {
+                "properties": {
+                    "uuid": {
+                        "description": "Uuid",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "title": {
+                        "description": "Title",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "body": {
+                        "description": "Body",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "description": "Status",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "publish_date": {
+                        "description": "Publish Date",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Created At",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "is_featured": {
+                        "description": "Is Featured",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "author": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/UserResource"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "total_likes": {
+                        "description": "Total Likes",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "comments": {
+                        "description": "Comments",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UserPaginationResource": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "meta": {
+                        "description": "meta",
+                        "type": "object"
+                    },
+                    "links": {
+                        "description": "meta",
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "UserResource": {
+                "properties": {
+                    "uuid": {
+                        "description": "Uuid",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Created At",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            },
+            "bearer_token": {
+                "type": "http",
+                "description": "Laravel Sanctum token authentication",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
